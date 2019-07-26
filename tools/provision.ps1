@@ -348,7 +348,6 @@ function Install-ThirdParty {
     "aws-sdk-cpp.1.4.55",
     "boost-msvc14.1.66.0-r1",
     "bzip2.1.0.6",
-    "doxygen.1.8.11",
     "gflags-dev.2.2.1",
     "glog.0.3.5",
     "libarchive.3.3.1-r1",
@@ -455,11 +454,6 @@ function Main {
       Copy-Item (Join-Path $chocoPath 'lib\winflexbison\tools\win_flex.exe') (Join-Path $chocoPath 'bin\flex.exe')
     }
   }
-  $out = Install-ChocoPackage 'cppcheck'
-  $out = Install-ChocoPackage '7zip.commandline'
-  $out = Install-ChocoPackage 'vswhere'
-  $out = Install-ChocoPackage 'cmake.portable' '3.10.2'
-  $out = Install-ChocoPackage 'windows-sdk-10.0'
 
   # Only install python if it's not needed
   $pythonInstall = Test-PythonInstalled
@@ -470,38 +464,10 @@ function Main {
     $pythonInstall = Test-PythonInstalled
   }
 
-  $out = Install-ChocoPackage 'wixtoolset' '' @('--version', '3.10.3.300701')
-  # Add the WiX binary path to the system path for use
-  Add-ToSystemPath 'C:\Program Files (x86)\WiX Toolset v3.10\bin'
-
   # Convenience variable for accessing Python
   [Environment]::SetEnvironmentVariable("OSQUERY_PYTHON_PATH", $pythonInstall, "Machine")
   $out = Install-PipPackage
   $out = Update-GitSubmodule
-  if (Test-Path env:OSQUERY_BUILD_HOST) {
-    $out = Install-ChocoPackage 'visualcppbuildtools'
-  } else {
-	$vsinfo = Get-VSInfo
-	# Install visual studio 2017 if no vs installation is found
-    if ($vsinfo.version -ne '15' -and $vsinfo.version -ne '14') {
-      $deploymentFile = Resolve-Path ([System.IO.Path]::Combine($PSScriptRoot, 'vsinstall.json'))
-      $chocoParams = @("--execution-timeout", "7200", "-packageParameters", "--in ${deploymentFile}")
-      $out = Install-ChocoPackage 'visualstudio2017community' '' ${chocoParams}
-
-      if (Test-RebootPending -eq $true) {
-        Write-Host "[*] Windows requires a reboot to complete installing Visual Studio." -foregroundcolor yellow
-        Write-Host "[*] Please reboot your system and re-run this provisioning script." -foregroundcolor yellow
-        Exit 0
-      }
-    } else {
-      Write-Host "[*] Visual Studio installation found. Skipping install." -foregroundcolor Green
-    }
-    if ($PSVersionTable.PSVersion.Major -lt 5 -and $PSVersionTable.PSVersion.Minor -lt 1 ) {
-      Write-Host "[*] Powershell version is < 5.1. Skipping Powershell Linter Installation." -foregroundcolor yellow
-    } else {
-      $out = Install-PowershellLinter
-    }
-  }
   $out = Install-ThirdParty
   Write-Host "[+] Done." -foregroundcolor Yellow
 }

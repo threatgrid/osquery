@@ -1,117 +1,35 @@
-# osquery
+# Branch of osquery 3.3.2 for Orbital
 
-<p align="center">
-<img align="center" src="https://github.com/facebook/osquery/raw/master/docs/img/logo-2x-dark.png" alt="osquery logo" width="200"/>
+This branch has changes that has changes used by Cisco for Orbital with the aim of contributing these changes back to the original osquery project. This is branched off of version 3.3.2 and some changes were made to allow building as the original build scripts no longer worked with some locations that files were downloaded from no longer existing, so you will need to follow the instructions below in order to build osquery.
 
-<p align="center">
-osquery is an operating system instrumentation framework for OS X/macOS, Windows, and Linux. <br/>
-The tools make low-level operating system analytics and monitoring both performant and intuitive.
+## Building osquery
 
-| Platform | Build status  | | | |
-|----------|---------------|---|---|---|
-MacOS 10.13    | [![Build Status](https://jenkins.osquery.io/job/osqueryMasterBuildMacOS/badge/icon)](https://jenkins.osquery.io/job/osqueryMasterBuildMacOS/) | | **Homepage:** | https://osquery.io
-CentOS 6.x | [![Build Status](https://jenkins.osquery.io/job/osqueryMasterBuildCentOS6/badge/icon)](https://jenkins.osquery.io/job/osqueryMasterBuildCentOS6/) | | **Downloads:** | https://osquery.io/downloads
-CentOS 7.x   | [![Build Status](https://jenkins.osquery.io/job/osqueryMasterBuildCentOS7/badge/icon)](https://jenkins.osquery.io/job/osqueryMasterBuildCentOS7/) | | **Tables:** | https://osquery.io/schema
-Ubuntu 14.04   | [![Build Status](https://jenkins.osquery.io/job/osqueryMasterBuildUbuntu14/badge/icon)](https://jenkins.osquery.io/job/osqueryMasterBuildUbuntu14/) | | **Packs:** | [https://osquery.io/packs](https://github.com/facebook/osquery/tree/master/packs)
-Ubuntu 16.04 | [![Build Status](https://jenkins.osquery.io/job/osqueryMasterBuildUbuntu16/badge/icon)](https://jenkins.osquery.io/job/osqueryMasterBuildUbuntu16/) | | **Guide:** | https://osquery.readthedocs.org
-Windows 2016 | [![Build Status](https://jenkins.osquery.io/job/osqueryMasterBuildWindows2016/badge/icon)](https://jenkins.osquery.io/job/osqueryMasterBuildWindows2016/) | | [![Slack Status](https://osquery-slack.herokuapp.com/badge.svg)](https://osquery-slack.herokuapp.com) | https://osquery-slack.herokuapp.com
-Windows 10 | [![Build Status](https://jenkins.osquery.io/job/osqueryMasterBuildWindows10/badge/icon)](https://jenkins.osquery.io/job/osqueryMasterBuildWindows10/) | | |
-FreeBSD 11 | [![Build Status](https://jenkins.osquery.io/job/osqueryMasterBuildFreeBSD11/badge/icon)](https://jenkins.osquery.io/job/osqueryMasterBuildFreeBSD11/) | | |
+In order to build osqueryd.exe the following software needs to be installed:
 
-There are many additional [continuous build jobs](https://jenkins.osquery.io/) that perform **dynamic** and **static** analysis, test the **package build** process, **rebuild dependencies** from source, assure **deterministic build** on macOS and Linux, **fuzz** test the virtual tables, and build on several other platforms not included above. Code safety, testing rigor, data integrity, and a friendly development community are our primary goals.
+* [Git for Windows](https://git-scm.com/download/win)
+* [Build Tools for Visual Studio 2019](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019) - Make sure to select "C++ build tools" in the installer
+* [CMake](https://cmake.org/download/) - Select "Add CMake to the system PATH for all users" during installation
 
-## What is osquery?
+You will also want to add `C:\ProgramData\chocolatey\bin` to the `PATH` environment variable for the system as this doesn't exactly get setup properly by the osquery build scripts.
 
-osquery exposes an operating system as a high-performance relational database. This allows you to write SQL-based queries to explore operating system data. With osquery, SQL tables represent abstract concepts such as running processes, loaded kernel modules, open network connections, browser plugins, hardware events or file hashes.
-
-SQL tables are implemented via a simple plugin and extensions API. A variety of tables already exist and more are being written: [https://osquery.io/schema](https://osquery.io/schema/). To best understand the expressiveness that is afforded to you by osquery, consider the following SQL queries:
-
-List the [`users`](https://osquery.io/schema/current#users):
-```sql
-SELECT * FROM users;
+Once the software above has been installed, go to "Start -> Visual Studio 2019 -> x64 Native Tools Command Prompt for VS 2019" in the Start menu and make sure to launch it as an administrator. With the command prompt open, navigate to a folder on the system you want to place your work folders in. Once in that folder, perform a clone of the osquery git repo:
 ```
-
-Check the [`processes`](https://osquery.io/schema/current#processes) that have a deleted executable:
-```sql
-SELECT * FROM processes WHERE on_disk = 0;
+git clone git@github.com:threatgrid/osquery.git
 ```
-
-Get the process name, port, and PID, for processes listening on all interfaces:
-```sql
-SELECT DISTINCT processes.name, listening_ports.port, processes.pid
-  FROM listening_ports JOIN processes USING (pid)
-  WHERE listening_ports.address = '0.0.0.0';
+Change into the folder and checkout the 3.3.2 branch:
 ```
-
-Find every OS X LaunchDaemon that launches an executable and keeps it running:
-```sql
-SELECT name, program || program_arguments AS executable
-  FROM launchd
-  WHERE (run_at_load = 1 AND keep_alive = 1)
-  AND (program != '' OR program_arguments != '');
+cd osquery
+git checkout v3.3.2
 ```
-
-Check for ARP anomalies from the host's perspective:
-
-```sql
-SELECT address, mac, COUNT(mac) AS mac_count
-  FROM arp_cache GROUP BY mac
-  HAVING count(mac) > 1;
+Run the development environment setup script. This only needs to be run once and does not need to be used for each time osqueryd.exe is built:
 ```
-
-Alternatively, you could also use a SQL sub-query to accomplish the same result:
-
-```sql
-SELECT address, mac, mac_count
-  FROM
-    (SELECT address, mac, COUNT(mac) AS mac_count FROM arp_cache GROUP BY mac)
-  WHERE mac_count > 1;
+tools\make-win64-dev-env.bat
 ```
-
-These queries can be:
-* performed on an ad-hoc basis to explore operating system state using the [osqueryi](https://osquery.readthedocs.org/en/latest/introduction/using-osqueryi/) shell
-* executed via a [scheduler](https://osquery.readthedocs.org/en/latest/introduction/using-osqueryd/) to monitor operating system state across a set of hosts
-* launched from custom applications using osquery Thrift APIs
-
-## Downloads / Install
-
-For latest stable builds for OS X (pkg) and Linux (deb/rpm), as well as yum and apt repository information visit [https://osquery.io/downloads](https://osquery.io/downloads/). Windows 10, 8, Server 2012 and 2016 packages are published to [Chocolatey](https://chocolatey.org/packages/osquery).
-
-The list of supported platforms for **running** osquery is massive:
-- Apple OS X 10.10, 10.11, and macOS 10.12, 10.13
-- Any 64bit Linux OS with `glibc >= 2.13` and `zlib >= 1.2`
-- Windows 10, 8, Server 2012, and 2016
-
-## Building from source
-
-Building osquery from source is encouraged! [Check out the documentation](https://osquery.readthedocs.org/en/latest/development/building/) to get started and join our developer community by giving us feedback in Github issues or submitting pull requests!
-
-We *officially* support a subset of OS versions for **building** because it is rather intense.
-- Ubuntu 14.04 and 16.04, CentOS 6.5 and 7
-- Apple macOS 10.13
-- Windows 10 and Server 2016
-
-## File Integrity Monitoring (FIM)
-
-osquery provides several [FIM features](http://osquery.readthedocs.org/en/stable/deployment/file-integrity-monitoring/) too! Just as OS concepts are represented in tabular form, the daemon can track OS events and later expose them in a table. Tables like [`file_events`](https://osquery.io/schema/current#file_events) or [`yara_events`](https://osquery.io/schema/current#yara_events) can be selected to retrieve buffered events.
-
-The configuration allows you to organize files and directories for monitoring. Those sets can be paired with lists of YARA signatures or configured for additional monitoring such as access events.
-
-## Process and socket auditing
-
-There are several forms of [eventing](http://osquery.readthedocs.org/en/stable/development/pubsub-framework/) in osquery along with file modifications and accesses. These range from disk mounts, network reconfigurations, hardware attach and detaching, and process starting. For a complete set review the table documentation and look for names with the `_events` suffix.
-
-## License
-
-By contributing to osquery you agree that your contributions will be licensed as defined on the LICENSE file.
-
-## Vulnerabilities
-
-We keep track of security announcements in our tagged version release notes on GitHub. We aggregate these into [SECURITY.md](https://github.com/facebook/osquery/blob/master/SECURITY.md) too.
-
-Facebook has a [bug bounty](https://www.facebook.com/whitehat/) program that includes osquery. If you find a security vulnerability in osquery, please submit it via the process outlined on that page and do not file a public issue. For more information on finding vulnerabilities in osquery, see a recent blog post about [bug-hunting osquery](https://www.facebook.com/notes/facebook-bug-bounty/bug-hunting-osquery/954850014529225).
-
-## Learn more
-
-Read the [launch blog post](https://code.facebook.com/posts/844436395567983/introducing-osquery/) for background on the project.
-If you're interested in learning more about osquery, visit the [users guide](https://osquery.readthedocs.org/). Development and usage discussion is happening in the osquery Slack, grab an invite automatically [here](https://slack.osquery.io)!
+When the script is done setting up the environment, setup a folder to perform the build and run cmake to perform the build:
+```
+mkdir build
+cd build
+cmake ..
+cmake --build . --config RelWithDebInfo -j
+```
+When the build has successfully finished, you can find a copy of the binary under `build\osquery\RelWithDebInfo\osqueryd.exe` in the git repo folder. Building again with the cmake commands should not require starting a command prompt as an administrator, that is only required for the development environment setup scripts.
