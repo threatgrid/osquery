@@ -25,7 +25,15 @@ Run the development environment setup script. This only needs to be run once and
 ```
 tools\make-win64-dev-env.bat
 ```
-When the script is done setting up the environment, setup a folder to perform the build and run cmake to perform the build:
+When the script is done setting up the environment, you will need to perform a build of THRIFT which is contained in the `third-party` folder. Inside the osquery git repo within a command prompt, run the following commands:
+```
+cd third-party\thrift
+mkdir build-win
+cd build-win
+cmake -DBOOST_INCLUDEDIR=C:\local\boost_1_71_0 -DBOOST_LIBRARYDIR=C:\local\boost_1_71_0\lib64-msvc-14.2 -DOPENSSL_ROOT_DIR=C:\ProgramData\chocolatey\lib\openssl\local -DCMAKE_BUILD_TYPE=Release -DWITH_MT=ON -DWITH_SHARED_LIB=off -G "NMake Makefiles" ..
+nmake
+```
+When this is done you should find a library file named `thriftmt.lib` in the `build-win\lib` folder. You will need to copy this over the existing file located in `C:\ProgramData\chocolatey\lib\thrift-dev\local\lib` to incorporate changes for security handling of named pipes in Windows. Once this is copied you can then change into the main `osquery` folder and perform the following to build:
 ```
 mkdir build
 cd build

@@ -316,10 +316,10 @@ bool TNamedPipeServer::createNamedPipe(const TAutoCrit & /*lockProof*/) {
 
   // Windows - set security to allow non-elevated apps
   // to access pipes created by elevated apps.
-  SID_IDENTIFIER_AUTHORITY SIDAuthWorld = SECURITY_WORLD_SID_AUTHORITY;
-  PSID everyone_sid = NULL;
+  SID_IDENTIFIER_AUTHORITY SIDAuthLocal = SECURITY_NT_AUTHORITY;
+  PSID local_sid = NULL;
   AllocateAndInitializeSid(
-      &SIDAuthWorld, 1, SECURITY_WORLD_RID, 0, 0, 0, 0, 0, 0, 0, &everyone_sid);
+      &SIDAuthLocal, 1, SECURITY_LOCAL_SYSTEM_RID, 0, 0, 0, 0, 0, 0, 0, &local_sid);
 
   EXPLICIT_ACCESS ea;
   ZeroMemory(&ea, sizeof(EXPLICIT_ACCESS));
@@ -328,7 +328,7 @@ bool TNamedPipeServer::createNamedPipe(const TAutoCrit & /*lockProof*/) {
   ea.grfInheritance = NO_INHERITANCE;
   ea.Trustee.TrusteeForm = TRUSTEE_IS_SID;
   ea.Trustee.TrusteeType = TRUSTEE_IS_WELL_KNOWN_GROUP;
-  ea.Trustee.ptstrName = static_cast<LPTSTR>(everyone_sid);
+  ea.Trustee.ptstrName = static_cast<LPTSTR>(local_sid);
 
   PACL acl = NULL;
   SetEntriesInAcl(1, &ea, NULL, &acl);
@@ -357,7 +357,7 @@ bool TNamedPipeServer::createNamedPipe(const TAutoCrit & /*lockProof*/) {
   DWORD lastError = GetLastError();
   LocalFree(sd);
   LocalFree(acl);
-  FreeSid(everyone_sid);
+  FreeSid(local_sid);
 
   if (hPipe.h == INVALID_HANDLE_VALUE) {
     Pipe_.reset();
