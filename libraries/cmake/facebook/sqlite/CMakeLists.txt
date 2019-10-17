@@ -5,7 +5,7 @@
 # the LICENSE file found in the root directory of this source tree.
 
 function(sqliteMain)
-  set(base_url "${THIRD_PARTY_REPOSITORY_URL}/third-party/src")
+  set(base_url "${ORBITAL_THIRD_PARTY_REPOSITORY_URL}/third-party/src")
   set(archive_name "sqlite-amalgamation-3260000")
   set(archive_type "tar.gz")
   set(hash "a1ecb747d33d9ffae110c3e836f0094f0b172190807cb1d76568bb167b84b641")

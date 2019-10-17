@@ -94,10 +94,10 @@ cd osquery
 
 # Configure
 mkdir build; cd build
-cmake -G "Visual Studio 16 2019" -A x64 -T v141 ..
+cmake -G "Visual Studio 16 2019" -A x64 ..
 
 # Build
-cmake --build . --config RelWithDebInfo -j10 # Number of projects to build in parallel
+cmake --build . --config Release -j10 # Number of projects to build in parallel
 ```
 
 The use of an Administrator shell is recommended because the build process creates symbolic links. These [require a special permission to create on Windows](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/create-symbolic-links), and the simplest solution is to build as Administrator. If you wish, you can instead assign just the `SeCreateSymbolicLinkPrivilege` permission to the user account. The setting can be found in "Local Security Policy" under Security Settings, Local Policies, User Rights Assignment. There is also an opportunity while installing Git for Windows from the official installer (unselected by default) to enable this permission for a specific user, who then has to log out and back in for the policy change to apply.
