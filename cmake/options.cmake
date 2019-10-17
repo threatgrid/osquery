@@ -95,6 +95,12 @@ if("${THIRD_PARTY_REPOSITORY_URL}" STREQUAL "")
   set(THIRD_PARTY_REPOSITORY_URL "https://s3.amazonaws.com/osquery-packages")
 endif()
 
+# This is the default S3 storage used by Cisco Orbital to store 3rd party dependencies; it
+# is provided here as a configuration option
+if("${ORBITAL_THIRD_PARTY_REPOSITORY_URL}" STREQUAL "")
+  set(ORBITAL_THIRD_PARTY_REPOSITORY_URL "https://s3.us-west-2.amazonaws.com/orbital-osquery-packages")
+endif()
+
 detectOsqueryVersion()
 
 message(STATUS "osquery version: ${OSQUERY_VERSION_INTERNAL}")
