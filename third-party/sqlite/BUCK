@@ -12,7 +12,7 @@ load("//tools/build_defs/oss/osquery:platforms.bzl", "POSIX", "WINDOWS")
 
 osquery_http_archive(
     name = "archive",
-    sha256 = "a1ecb747d33d9ffae110c3e836f0094f0b172190807cb1d76568bb167b84b641",
+    sha256 = "8292864dcf3f7c0d558dff0c4ea7b3fca6eea1a2620ec0159e3dd6fbadfc737f",
     type = "tar.gz",
     urls = [
         "https://s3.amazonaws.com/osquery-packages/third-party/src/sqlite-amalgamation-3260000.tar.gz",

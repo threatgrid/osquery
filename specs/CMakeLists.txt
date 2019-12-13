@@ -32,8 +32,6 @@ function(generateNativeTables)
     carves.table
     chrome_extensions.table
     cpuid.table
-    curl.table
-    curl_certificate.table
     etc_hosts.table
     etc_protocols.table
     etc_services.table
