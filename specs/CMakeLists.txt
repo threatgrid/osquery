@@ -34,7 +34,6 @@ function(generateNativeTables)
     azure_instance_metadata.table
     azure_instance_tags.table
     carbon_black_info.table
-    carves.table
     chrome_extensions.table
     chrome_extension_content_scripts.table
     etc_hosts.table
