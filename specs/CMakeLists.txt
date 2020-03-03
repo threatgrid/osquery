@@ -31,7 +31,6 @@ endfunction()
 function(generateNativeTables)
   set(platform_independent_spec_files
     carbon_black_info.table
-    carves.table
     chrome_extensions.table
     cpuid.table
     etc_hosts.table
