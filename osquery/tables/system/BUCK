@@ -259,6 +259,7 @@ osquery_cxx_library(
                 "windows/cpu_info.cpp",
                 "windows/default_environment.cpp",
                 "windows/disk_info.cpp",
+                "windows/dns_cache.cpp",
                 "windows/drivers.cpp",
                 "windows/groups.cpp",
                 "windows/hvci_status.cpp",

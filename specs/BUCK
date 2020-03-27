@@ -812,6 +812,10 @@ osquery_gentable_cxx_library(
             "windows/windows_optional_features.table",
             "windows",
         ),
+        (
+            "windows/dns_cache.table",
+            "windows",
+        ),
     ],
     spec_files = [
         "azure_instance_metadata.table",
