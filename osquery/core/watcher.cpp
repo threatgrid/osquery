@@ -101,6 +101,8 @@ CLI_FLAG(bool,
 
 CLI_FLAG(bool, disable_watchdog, false, "Disable userland watchdog process");
 
+CLI_FLAG(bool, disable_utilization_watchdog, false, "Disable utilization monitoring of watchdog process");
+
 void Watcher::resetWorkerCounters(size_t respawn_time) {
   // Reset the monitoring counters for the watcher.
   state_.sustained_latency = 0;
@@ -495,10 +497,13 @@ Status WatcherRunner::isChildSane(const PlatformProcess& child) const {
     return Status(0);
   }
 
-  if (exceededCyclesLimit(change)) {
-    return Status(1,
-                  "Maximum sustainable CPU utilization limit exceeded: " +
-                      std::to_string(change.sustained_latency * change.iv));
+  if (!FLAGS_disable_utilization_watchdog)
+  {
+    if (exceededCyclesLimit(change)) {
+      return Status(1,
+                    "Maximum sustainable CPU utilization limit exceeded: " +
+                        std::to_string(change.sustained_latency * change.iv));
+    }
   }
 
   // Check if the private memory exceeds a memory limit.
