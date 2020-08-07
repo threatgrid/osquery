@@ -36,8 +36,6 @@ function(generateNativeTables)
     chrome_extensions.table
     chrome_extension_content_scripts.table
     cpuid.table
-    curl.table
-    curl_certificate.table
     etc_hosts.table
     etc_protocols.table
     etc_services.table
@@ -269,10 +267,7 @@ function(generateNativeTables)
     "windows/pipes.table:windows"
     "windows/wmi_filter_consumer_binding.table:windows"
     "windows/wmi_event_filters.table:windows"
-    "windows/windows_events.table:windows"
     "windows/appcompat_shims.table:windows"
-    "windows/ntfs_journal_events.table:windows"
-    "windows/powershell_events.table:windows"
     "windows/winbaseobj.table:windows"
     "windows/cpu_info.table:windows"
     "windows/wmi_bios_info.table:windows"
