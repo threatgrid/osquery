@@ -287,6 +287,7 @@ function(generateNativeTables)
     "windows/connectivity.table:windows"
     "windows/userassist.table:windows"
     "windows/hvci_status.table:windows"
+    "windows/dns_cache.table:windows"
     "yara/yara_events.table:linux,macos"
     "yara/yara.table:linux,macos,freebsd"
   )
