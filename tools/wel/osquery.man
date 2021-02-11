@@ -2,7 +2,7 @@
 <instrumentationManifest xsi:schemaLocation="http://schemas.microsoft.com/win/2004/08/events eventman.xsd" xmlns="http://schemas.microsoft.com/win/2004/08/events" xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:trace="http://schemas.microsoft.com/win/2004/08/events/trace">
 	<instrumentation>
 		<events>
-			<provider name="Facebook" guid="{F7740E18-3259-434F-9759-976319968900}" symbol="OsqueryWindowsEventLogProvider" resourceFileName="%systemdrive%\Program Files\osquery\osqueryd\osqueryd.exe" messageFileName="%systemdrive%\Program Files\osquery\osqueryd\osqueryd.exe">
+			<provider name="Cisco Orbital" guid="{d7f87501-a039-4b63-97e9-7737b7323e87}" symbol="OsqueryWindowsEventLogProvider" resourceFileName="" messageFileName="">
 				<events>
 					<event symbol="DebugMessage" value="1" version="0" channel="osquery" level="win:Warning" task="LogMessage" opcode="MessageOpcode" template="_template_message" keywords="DebugWindowsEventLogMessage " message="$(string.osquery.event.1.message)"></event>
 					<event symbol="InfoMessage" value="2" version="0" channel="osquery" level="win:Informational" task="LogMessage" opcode="MessageOpcode" template="_template_message" keywords="InfoWindowsEventLogMessage " message="$(string.osquery.event.2.message)"></event>
@@ -12,7 +12,7 @@
 				</events>
 				<levels></levels>
 				<tasks>
-					<task name="LogMessage" symbol="WindowsEventLogMessage" value="1" eventGUID="{D3C2B9E0-4AFE-41BD-99BE-F00EE4DFEB17}"></task>
+					<task name="LogMessage" symbol="WindowsEventLogMessage" value="1" eventGUID="{64314a04-446d-4fcd-be6f-c234f5851151}"></task>
 				</tasks>
 				<opcodes>
 					<opcode name="MessageOpcode" symbol="_opcode_message" value="10"></opcode>
