@@ -68,6 +68,9 @@ const std::unordered_set<int> kAllowedSQLiteActionCodes = {
 
     // Required for recursive queries
     SQLITE_RECURSIVE,
+    
+    // Allow transactions
+    SQLITE_TRANSACTION,
 };
 
 class SQLiteDBManager;
