@@ -138,7 +138,6 @@ function(generateNativeTables)
     "darwin/user_interaction_events.table:macos"
     "darwin/virtual_memory_info.table:macos"
     "darwin/wifi_networks.table:macos"
-    "darwin/wifi_scan.table:macos"
     "darwin/wifi_status.table:macos"
     "darwin/xprotect_entries.table:macos"
     "darwin/xprotect_meta.table:macos"
