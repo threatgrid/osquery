@@ -182,24 +182,31 @@ Status parseWindowsEventLogPTree(WELEvent& windows_event,
   };
 
   // Add the event & user data node to the property list
+  getDataFromPtree("Event.BinaryEventData");
+  getDataFromPtree("Event.DebugData");
   getDataFromPtree("Event.EventData");
+  getDataFromPtree("Event.ProcessingErrorData");
+  getDataFromPtree("Event.RenderingInfo");
   getDataFromPtree("Event.UserData");
 
-  try {
-    std::stringstream stream;
-    pt::write_json(stream, property_list.get_child("Event"), false);
+  auto eventChild = property_list.get_child_optional("Event");
+  if (eventChild) {
+    try {
+      std::stringstream stream;
+      pt::write_json(stream, *eventChild, false);
 
-    output.data = stream.str();
+      output.data = stream.str();
 
-  } catch (const pt::json_parser::json_parser_error& e) {
-    return Status::failure(
-        "Invalid Windows event object: the EventData tag is not valid: " +
-        e.message());
+    } catch (const pt::json_parser::json_parser_error& e) {
+      return Status::failure(
+          "Invalid Windows event object: the EventType tag is not valid: " +
+          e.message());
+    }
   }
 
   if (output.data.empty()) {
     return Status::failure(
-        "Invalid Windows event object: the EventData output is empty");
+        "Invalid Windows event object: the EventType output is empty");
   }
 
   output.data.pop_back();
